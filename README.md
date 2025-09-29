@@ -75,10 +75,10 @@ You can set the environment variable `STICKY_VAR_DB` to control which file you w
 Here's an example:
 
 ```sh
- stickyvar db-path
+> stickyvar db-path
 /home/ysthakur/.local/state/stickyvar/sticky-var.db
- $env.STICKY_VAR_DB = "foo.db"
- stickyvar db-path
+> $env.STICKY_VAR_DB = "foo.db"
+> stickyvar db-path
 foo.db
 ```
 
