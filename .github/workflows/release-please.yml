@@ -44,17 +44,17 @@ jobs:
       - run: cargo build --release
 
       - run: mv ./target/release/stickyvar.exe ./stickyvar-${{ matrix.os }}.exe
-        if: matrix.os == "windows"
+        if: matrix.os == 'windows'
       - run: mv ./target/release/stickyvar ./stickyvar-${{ matrix.os }}
-        if: matrix.os != "windows"
+        if: matrix.os != 'windows'
 
       - name: Upload executable for ${{ matrix.os }}
-        if: matrix.os == "windows"
+        if: matrix.os == 'windows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload ${{ needs.release-please.outputs.tag_name }} ./stickyvar-${{ matrix.os }}.exe
       - name: Upload executable for ${{ matrix.os }}
-        if: matrix.os != "windows"
+        if: matrix.os != 'windows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload ${{ needs.release-please.outputs.tag_name }} ./stickyvar-${{ matrix.os }}
