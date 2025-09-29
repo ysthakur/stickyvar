@@ -20,7 +20,8 @@ jobs:
   check:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # Windows excluded because of stupid clippy bug: https://github.com/rust-lang/rust-clippy/issues/7416
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v5
