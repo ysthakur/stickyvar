@@ -1,5 +1,26 @@
 # Sticky variables
 
+A little utility to keep environment variables around permanently\* and share them between sessions.
+
+Should support any sufficiently POSIX-y shell, as well as Nushell.
+
+## Installation
+
+### Hemorrhaging-edge releases
+
+Go to the latest run of the [build](https://github.com/ysthakur/stickyvar/actions/workflows/build.yml) workflow and download the zip file for your platform:
+
+- `ubuntu-latest` should work for Linux distros
+- I'll let you figure out what `windows-latest` and `macos-latest` are for
+
+Inside the zip file should be the executable (yes, that's the only thing inside the zip, blame GitHub for the unnecessary archiving).
+
+## Setup
+
+### POSIX-y shells
+
+If you're using a sufficiently POSIX-y shell, such as Bash (get a better shell) or Zsh, then
+
 TODOs:
 
 - Pre-prompt hooks for Zsh and Nushell to update variables?

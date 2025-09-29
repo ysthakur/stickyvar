@@ -82,7 +82,7 @@ fn main() {
                 ShellFamily::Sh => sh::init(&my_path),
                 ShellFamily::Nu => nu::init(&my_path),
             };
-            println!("{}", code);
+            print!("{}", code);
         }
         Commands::Set { name, value } => {
             let db = open_conn();

@@ -15,18 +15,20 @@ pub fn init(sv_path: &str) -> String {
         if [ "$#" = 1 ]
         then
             while IFS= read -r line
-                do
-                    # Hopefully this doesn't overwrite existing variables called _stickyvar_name/value
-                    # Worth considering local - it's not part of POSIX but most shells support it
-                    _stickyvar_name="$(echo $line | cut -d '=' -f 1)"
-                    _stickyvar_value="$(echo $line | cut -d '=' -f 2-)"
-                    _stickyvar_value="$({sv_path} decode-value "$_stickyvar_value")"
-                    export $_stickyvar_name="$_stickyvar_value"
-                    echo "Set $_stickyvar_name to $_stickyvar_value"
-                done < <({sv_path} get-all)
-                # We have to use process substitution rather than a pipe because
-                # a pipe would make the while loop run in a subprocess, meaning
-                # environment variables wouldn't be affected in the current process
+            do
+                # Hopefully this doesn't overwrite existing variables called _stickyvar_name/value
+                # Worth considering local - it's not part of POSIX but most shells support it
+                _stickyvar_name="$(echo $line | cut -d '=' -f 1)"
+                _stickyvar_value="$(echo $line | cut -d '=' -f 2-)"
+                _stickyvar_value="$({sv_path} decode-value "$_stickyvar_value")"
+                export $_stickyvar_name="$_stickyvar_value"
+                echo "Set $_stickyvar_name to $_stickyvar_value"
+            done << EOF
+`{sv_path} get-all`
+EOF
+            # We have to use redirection rather than a pipe because
+            # a pipe would make the while loop run in a subprocess, meaning
+            # environment variables wouldn't be affected in the current process
         elif [ "$#" = 2 ]
         then
             _stickyvar_value="$({sv_path} get "$2")"
