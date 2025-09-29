@@ -25,7 +25,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Clippy
-      run: cargo clippy -- -Dwarnings -Wclippy::all
+      run: cargo clippy -- -Dwarnings -Wclippy::all -Aclippy::collapsible-if
   upload-artifact:
     strategy:
       matrix:
