@@ -8,8 +8,6 @@ Should support any sufficiently POSIX-y shell, as well as Nushell.
 
 ### From crates.io
 
-At the time of writing, this crate hasn't been published to crates.io yet, but I assume this'll work in the future:
-
 ```sh
 cargo install stickyvar
 ```
@@ -22,6 +20,10 @@ Go to the latest run of the [build](https://github.com/ysthakur/stickyvar/action
 - I'll let you figure out what `windows-latest` and `macos-latest` are for
 
 Inside the zip file should be the executable (yes, that's the only thing inside the zip, blame GitHub for the unnecessary archiving).
+
+### Mildly-prickly-edge releases
+
+Go to the latest release on the [Releases](https://github.com/ysthakur/stickyvar/releases) page and download one of the assets there. I screwed up the 0.1.0 release, though, so there's no assets for that one. Hopefully future releases will.
 
 ### Build it yourself
 
@@ -101,3 +103,5 @@ TODOs:
     newer than the found sticky vars
   - Not sure how useful this would be
 - Set normal shell variables in Nushell rather than just environment variables. Typing `$env.foo` is annoying, `$foo` is easier
+
+<sub>*Nothing in this world is permanent. They're stored in an sqlite database (just a file), and this file could always be deleted or the hard drive could be corrupted by solar radiation or the computer could die from water damage after protecting you from a shark attack.</sub>
