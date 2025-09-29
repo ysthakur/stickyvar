@@ -23,5 +23,7 @@ jobs:
       name: Upload artifact
       with:
         name: stickyvar-${{ matrix.os }}
-        path: target/release/*
+        path: |
+          target/release/stickyvar
+          target/release/stickyvar.exe
         retention-days: 90
