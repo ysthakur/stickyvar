@@ -1,6 +1,9 @@
 [package]
 name = "stickyvar"
 version = "0.1.0"
+description = "Create permanent-ish environment variables that you can share between sessions"
+repository = "https://github.com/ysthakur/stickyvar"
+homepage = "https://github.com/ysthakur/stickyvar"
 edition = "2024"
 license = "MIT"
 
