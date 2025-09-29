@@ -77,7 +77,7 @@ fn main() {
                 .expect("Expected to be run with 1 argument (the program name)");
             let my_path = PathBuf::from(&my_path);
             let my_path = my_path.canonicalize().unwrap_or(my_path);
-            let my_path = my_path.to_string_lossy().to_owned();
+            let my_path = my_path.to_string_lossy().into_owned();
             let code = match shell {
                 ShellFamily::Sh => sh::init(&my_path),
                 ShellFamily::Nu => nu::init(&my_path),
@@ -160,13 +160,16 @@ fn main() {
 fn get_db_path() -> PathBuf {
     if let Ok(db_path) = std::env::var(DB_FILE_VAR) {
         PathBuf::from(db_path)
-    } else if let Some(dir) = dirs::state_dir().or_else(|| dirs::data_local_dir()) {
+    } else if let Some(dir) = dirs::state_dir().or_else(dirs::data_local_dir) {
         let sv_dir = dir.join(STICKYVAR_DIR);
         if !sv_dir.exists() {
-            std::fs::create_dir_all(&sv_dir).expect(&format!(
-                "Couldn't create directory for database file: {}",
-                sv_dir.display()
-            ));
+            if let Err(e) = std::fs::create_dir_all(&sv_dir) {
+                eprintln!(
+                    "Couldn't create directory for database file {}: {}",
+                    sv_dir.display(),
+                    e
+                );
+            }
         }
         sv_dir.join(DB_FILE_NAME)
     } else {
