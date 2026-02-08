@@ -94,7 +94,7 @@ Suppose you have two sessions that you want to share environment variables betwe
 
 If you set the environment variable `STICKY_VAR_DB` to, say, `~/foo.db` in both sessions, they'll both use variables from there, but other sessions will continue using the default database.
 
-TODO asciinema recording
+[![demo](https://asciinema.org/a/783019.svg)](https://asciinema.org/a/783019)
 
 ---
 
