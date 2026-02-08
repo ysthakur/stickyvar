@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/ysthakur/stickyvar/compare/v0.1.1...v0.1.2) (2026-02-08)
+
+
+### Bug Fixes
+
+* Correctly get path of current executable ([f2efd13](https://github.com/ysthakur/stickyvar/commit/f2efd132b5a7da8a2f0dd5481e9413b5ea5a39ec))
+
 ## [0.1.1](https://github.com/ysthakur/stickyvar/compare/v0.1.0...v0.1.1) (2026-02-08)
 
 
