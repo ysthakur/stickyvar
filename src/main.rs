@@ -72,13 +72,13 @@ fn main() {
             // When generating the init script, rather than assuming this program is
             // installed as "stickyvar," we use the path used to invoke the current
             // binary
-            // TODO if it's just the name of a binary, resolve using $PATH?
-            let my_path = std::env::args()
-                .next()
-                .expect("Expected to be run with 1 argument (the program name)");
-            let my_path = PathBuf::from(&my_path);
-            let my_path = my_path.canonicalize().unwrap_or(my_path);
-            let my_path = my_path.to_string_lossy().into_owned();
+            let my_path = match std::env::current_exe() {
+                Ok(path) => path.to_string_lossy().into_owned(),
+                Err(e) => {
+                    eprintln!("Failed to get path of current exe: {e}");
+                    std::process::exit(1);
+                }
+            };
             let code = match shell {
                 ShellFamily::Sh => shells::init_posix(&my_path),
                 ShellFamily::Nu => shells::init_nushell(&my_path),
