@@ -49,10 +49,10 @@ eval "$(stickyvar init sh)"
 If you're using Nushell, pat yourself on the back for your great taste in shells, then put the following in `env.nu`:
 
 ```nu
-stickyvar init sh | save --force $"($nu.cache-dir)/stickyvar.nu"
+stickyvar init nu | save --force $"($nu.cache-dir)/stickyvar.nu"
 ```
 
-It'll create a file `stickyvar.nu` every time you open Nushell. Alternatively, you can also manually generate the setup script just once if you prefer.
+It'll create a file `stickyvar.nu` every time you open Nushell. Alternatively, you can also manually run that snippet and generate the setup script just once.
 
 Then, put the following in `config.nu` to actually load the module from the setup script:
 
