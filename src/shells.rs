@@ -1,8 +1,17 @@
 //! Setup code for shells
 
+static MAIN_DESC: &str = "Manage sticky variables";
+static SET_DESC: &str =
+    "Set a variable, both as an environment variable and in the sticky variable database";
+static LOAD_DESC: &str =
+    "If given a variable name, load that variable. Otherwise, load all variables in database.";
+static LIST_DESC: &str = "Open the database of variables and return a table containing each variable's name, value, and modified time (in seconds since Unix epoch)";
+static DEL_DESC: &str = "Delete the given variable (both the sticky variable and the environment variable)";
+
 /// Setup code for POSIX-compliant shells
 pub fn init_posix(sv_path: &str) -> String {
-    format!(r#"sv() {{
+    format!(
+        r#"sv() {{
     if [ "$1" = "set" ]
     then
         if [ "$#" != 3 ]
@@ -55,23 +64,32 @@ EOF
         fi
         {sv_path} del "$2" && unset "$2"
     else
-        echo "Subcommands: set NAME VALUE, load [NAME], list, del [NAME]"
+        echo "{MAIN_DESC}
+
+Subcommands:
+    set NAME VALUE    {SET_DESC}
+    load [NAME]       {LOAD_DESC}
+    list              {LIST_DESC}
+    del NAME          {DEL_DESC}"
     fi
 }}
-"#)
+"#
+    )
 }
 
 /// Setup code for Nushell
 pub fn init_nushell(sv_path: &str) -> String {
-    format!(r#"export module sv {{
-    # Set a variable, both as an environment variable and in the sticky variable database
+    format!(
+        r#"
+# {MAIN_DESC}
+export module sv {{
+    # {SET_DESC}
     export def --env set [name: string, value: string] {{
         load-env {{ $name: $value }}
         {sv_path} set $name $value
     }}
 
-    # If given a variable name, load that variable. Otherwise, load all variables
-    # in database.
+    # {LOAD_DESC}
     export def --env load [ name?: string ] {{
         if $name != (null) {{
             let value = {sv_path} get $name
@@ -88,16 +106,19 @@ pub fn init_nushell(sv_path: &str) -> String {
         }}
     }}
 
-    export def --env del [ name: string ] {{
-        {sv_path} del $name
-        hide-env $name
-    }}
-
-    # Open the database of variables and return a table containing each
-    # variable's name, value, and modified time (in seconds since Unix epoch)
+    # {LIST_DESC}
     export def --env list [] {{
         open ({sv_path} db-path)
     }}
+
+    # {DEL_DESC}
+    export def --env del [
+        name: string # The variable to delete
+    ] {{
+        {sv_path} del $name
+        hide-env $name
+    }}
 }}
-"#)
+"#
+    )
 }

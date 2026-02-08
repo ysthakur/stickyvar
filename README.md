@@ -67,6 +67,12 @@ The init script generated earlier should've added an `sv` function/module with t
 - `sv load` (no extra arguments) will load and set all variables from the sticky variable database
 - `sv list` will list names and values of sticky variables in the database
   - In Nushell, this actually just opens the database, so it also includes the last modified time of each variable (as seconds since Unix epoch)
+- `sv del FOO` will delete `FOO` from the sticky variable database and also unset the environment variable `FOO`
+
+To get help:
+
+- Run `sv` in POSIX-compliant shells
+- Run `help sv` in Nushell
 
 ### Changing where variables are stored
 
