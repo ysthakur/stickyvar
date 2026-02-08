@@ -1,5 +1,7 @@
 # Sticky variables
 
+![Crates.io Version](https://img.shields.io/crates/v/stickyvar)
+
 A little utility to keep environment variables around permanently\* and share them between sessions. It does this by storing them in an sqlite database.
 
 Should support any sufficiently POSIX-y shell, as well as Nushell.
