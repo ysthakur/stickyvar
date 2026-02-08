@@ -3,8 +3,7 @@ use std::{path::PathBuf, time::SystemTime};
 use clap::{Parser, Subcommand, ValueEnum};
 use rusqlite::Connection;
 
-mod nu;
-mod sh;
+mod shells;
 
 static DB_FILE_VAR: &str = "STICKY_VAR_DB";
 /// Name of directory in which to store sticky variable database
@@ -44,6 +43,8 @@ enum Commands {
     Get { name: String },
     /// Get the values of all sticky variables in the format '{varname}={url encoded value}'
     GetAll,
+    /// Delete the given sticky variable from the database
+    Del { name: String },
     /// Get the path to the database used to store variables
     /// (to change this, set STICKY_VAR_DB to, say, '~/myvars.sqlite')
     DbPath,
@@ -79,8 +80,8 @@ fn main() {
             let my_path = my_path.canonicalize().unwrap_or(my_path);
             let my_path = my_path.to_string_lossy().into_owned();
             let code = match shell {
-                ShellFamily::Sh => sh::init(&my_path),
-                ShellFamily::Nu => nu::init(&my_path),
+                ShellFamily::Sh => shells::init_posix(&my_path),
+                ShellFamily::Nu => shells::init_nushell(&my_path),
             };
             print!("{}", code);
         }
@@ -96,7 +97,7 @@ fn main() {
                 ),
                 (name, value, time),
             )
-            .unwrap_or_exit(|e| eprintln!("Insert failed due to: {}", e));
+            .unwrap_or_exit(|e| eprintln!("Insert failed: {}", e));
         }
         Commands::Get { name } => {
             let db = open_conn();
@@ -106,7 +107,13 @@ fn main() {
                     (&name,),
                     |row| row.get(0),
                 )
-                .unwrap_or_exit(|e| eprintln!("Query failed due to: {}", e));
+                .unwrap_or_exit(|e| match e {
+                    rusqlite::Error::QueryReturnedNoRows => eprintln!("No such variable: {name}"),
+                    rusqlite::Error::QueryReturnedMoreThanOneRow => {
+                        panic_for_bug("Expected to only get one variable but got multiple rows");
+                    }
+                    _ => eprintln!("Query failed: {e}"),
+                });
             println!("{}", value);
         }
         Commands::GetAll => {
@@ -118,7 +125,7 @@ fn main() {
                 .query_map((), |row| {
                     Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))
                 })
-                .unwrap_or_exit(|e| eprintln!("Query failed due to: {}", e));
+                .unwrap_or_exit(|e| eprintln!("Query failed: {}", e));
             for var in vars {
                 let (name, value) = var.unwrap();
                 println!("{}={}", name, urlencoding::encode(&value))
@@ -133,7 +140,7 @@ fn main() {
                 .query_map((), |row| {
                     Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))
                 })
-                .unwrap_or_exit(|e| eprintln!("Query failed due to: {}", e));
+                .unwrap_or_exit(|e| eprintln!("Query failed: {}", e));
             for var in vars {
                 let (name, value) = var.unwrap();
                 // Make the value a single-line string
@@ -143,6 +150,23 @@ fn main() {
                     .replace('\n', r#"\n"#)
                     .replace('\r', r#"\r"#);
                 println!("{name}=\"{value}\"");
+            }
+        }
+        Commands::Del { name } => {
+            let db = open_conn();
+            let rows_affected = db
+                .execute(
+                    &format!("DELETE FROM {TABLE} WHERE {NAME_COL} = ?"),
+                    (&name,),
+                )
+                .unwrap_or_exit(|e| eprintln!("Delete failed: {}", e));
+            if rows_affected == 0 {
+                eprintln!("No such variable: {name}");
+                std::process::exit(1);
+            } else if rows_affected > 1 {
+                panic_for_bug(&format!(
+                    "Expected to only delete one variable but affected {rows_affected} rows"
+                ));
             }
         }
         Commands::DbPath => {
@@ -199,6 +223,12 @@ fn open_conn() -> Connection {
     )
     .unwrap_or_exit(|e| eprintln!("Couldn't create table {TABLE}: {e}"));
     db
+}
+
+fn panic_for_bug(msg: &str) -> ! {
+    panic!(
+        "{msg}. This should never happen. Please file an issue on GitHub (include the command you ran and the contents of your database)"
+    );
 }
 
 trait UnwrapOrExit<T, E> {
