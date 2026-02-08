@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/ysthakur/stickyvar/compare/v0.1.0...v0.1.1) (2026-02-08)
+
+
+### Features
+
+* Allow deleting variables ([64c271b](https://github.com/ysthakur/stickyvar/commit/64c271b62bbb2aceb0dd2133f183b88c93867736))
+
 ## 0.1.0 (2025-09-29)
 
 
