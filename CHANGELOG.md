@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/ysthakur/stickyvar/compare/v0.1.2...v0.1.3) (2026-02-15)
+
+
+### Bug Fixes
+
+* **posix:** Handle loading no variables ([05f69b5](https://github.com/ysthakur/stickyvar/commit/05f69b59d0af00911506b31efaf89b6c26442482))
+
 ## [0.1.2](https://github.com/ysthakur/stickyvar/compare/v0.1.1...v0.1.2) (2026-02-08)
 
 
