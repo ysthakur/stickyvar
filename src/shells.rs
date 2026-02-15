@@ -27,6 +27,9 @@ pub fn init_posix(sv_path: &str) -> String {
             # Load all variables
             while IFS= read -r line
             do
+                if [ -z $line ]; then
+                    continue # Skip empty string
+                fi
                 # Hopefully this doesn't overwrite existing variables called _stickyvar_name/value
                 # Worth considering local - it's not part of POSIX but most shells support it
                 _stickyvar_name="$(echo $line | cut -d '=' -f 1)"
